@@ -1,0 +1,4 @@
+sEg5tPt40asAAAAAAAAJ-zze37etYeXvjirTc6PIwr0
+token : sEg5tPt40asAAAAAAAAJ_ChD09Cjj10LVuJJGR54_KQ8brS9-7_uBuI73j2CJ-Rc
+
+auth for Dropbox Java app.
