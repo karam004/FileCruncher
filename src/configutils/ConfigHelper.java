@@ -74,4 +74,13 @@ public class ConfigHelper {
     public String getAccesskeyFilepath() {
         return this.accesskeyFile;
     }
+
+    public void addToAvailableSpace(final long val) {
+        long availbleSpace = Long.parseLong(sampleConfig
+                .getProperty(ConfigKeys.AVAILABLE_SPACE));
+        availbleSpace += val;
+        sampleConfig.setProperty(ConfigKeys.AVAILABLE_SPACE,
+                Long.toString(availbleSpace));
+
+    }
 }
