@@ -19,6 +19,9 @@ public class ServerTask implements Runnable {
     private static final int SERVER_MAGIC_NO = 0x67446698;
     private static final long HANDSHAKE_MAGIC_NO = 72578530415187L;
     private static final int NO_ZEROS = 128;
+    /**
+     * 
+     */
     private static final int WRITE_BUFF_SIZE = 4 * 1024;
     private static final int GIB_TO_BYTES = 1024 * 1024 * 1024;
     private static final int REQUEST_LENGTH = 28;

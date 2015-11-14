@@ -3,6 +3,7 @@ package configutils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -14,6 +15,7 @@ public class ConfigHelper {
     private String appKey;
     private String appSecret;
     private String accesskeyFile;
+    private static File accessProperties;
 
     private ConfigHelper(final File propertiesFile) throws IOException {
         loadProperties(propertiesFile);
@@ -28,7 +30,7 @@ public class ConfigHelper {
             final String currentdir = System
                     .getProperty(Constants.ACCESS_PROPERTIES_RELATIVE_PATH);
 
-            final File accessProperties = new File(currentdir,
+            accessProperties = new File(currentdir,
                     Constants.ACCESS_PROPERTIES_FILENAME);
 
             configHelper = new ConfigHelper(accessProperties);
@@ -81,6 +83,12 @@ public class ConfigHelper {
         availbleSpace += val;
         sampleConfig.setProperty(ConfigKeys.AVAILABLE_SPACE,
                 Long.toString(availbleSpace));
+        try {
+            FileOutputStream out = new FileOutputStream(accessProperties);
+            sampleConfig.save(out, "updated space");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 }
