@@ -71,7 +71,7 @@ public class FileChruncherService {
         serverThread.start();
 
         sleep(serverThread);
-
+        logger.debug("NBD server started at port " + port);
         return port;
     }
 
@@ -81,6 +81,7 @@ public class FileChruncherService {
 
         clientthread.start();
         sleep(clientthread);
+        logger.debug("NBD client started  " );
     }
 
     private static ServerSocket openServerSocket() throws IOException {

@@ -30,32 +30,8 @@ public class MountExt4 {
                             StandardCharsets.UTF_8));
 
             startClientProcess.waitFor();
-            if (startClientProcess.exitValue() != 0) {
-                String s;
-                while ((s = stdErr.readLine()) != null) {
-                    err.append(s);
-                }
-                stdErr.close();
-                stdOut.close();
+            errorHandler(startClientProcess,stdErr,stdOut,err);
 
-                logger.error("failed to make filesystem \n" + err);
-                throw new RuntimeException();
-            } else {
-                String s = "";
-                while ((s = stdErr.readLine()) != null) {
-                    err.append(s);
-                }
-                while ((s = stdOut.readLine()) != null) {
-                    err.append(s);
-                }
-                stdErr.close();
-                stdOut.close();
-                if (err.length() != 0) {
-
-                    logger.error("failed to make filesystem \n" + err);
-                    throw new RuntimeException();
-                }
-            }
         } catch (final IOException e) {
             throw new RuntimeException(e);
         } catch (final InterruptedException e) {
@@ -82,32 +58,8 @@ public class MountExt4 {
                             StandardCharsets.UTF_8));
 
             startClientProcess.waitFor();
-            if (startClientProcess.exitValue() != 0) {
-                String s;
-                while ((s = stdErr.readLine()) != null) {
-                    err.append(s);
-                }
-                stdErr.close();
-                stdOut.close();
+            errorHandler(startClientProcess,stdErr,stdOut,err);
 
-                logger.error("failed to mount filesystem\n" + err);
-                throw new RuntimeException();
-            } else {
-                String s = "";
-                while ((s = stdErr.readLine()) != null) {
-                    err.append(s);
-                }
-                while ((s = stdOut.readLine()) != null) {
-                    err.append(s);
-                }
-                stdErr.close();
-                stdOut.close();
-                if (err.length() != 0) {
-
-                    logger.error("failed to mount filesystem \n" + err);
-                    throw new RuntimeException();
-                }
-            }
         } catch (final IOException e) {
             throw new RuntimeException(e);
         } catch (final InterruptedException e) {
@@ -129,6 +81,17 @@ public class MountExt4 {
                             StandardCharsets.UTF_8));
 
             startClientProcess.waitFor();
+            errorHandler(startClientProcess,stdErr,stdOut,err);
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        } catch (final InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void errorHandler(Process startClientProcess,BufferedReader stdErr,
+                                     BufferedReader stdOut,StringBuilder err ) {
+        try {
             if (startClientProcess.exitValue() != 0) {
                 String s;
                 while ((s = stdErr.readLine()) != null) {
@@ -137,7 +100,7 @@ public class MountExt4 {
                 stdErr.close();
                 stdOut.close();
 
-                logger.error("failed to make dir \n" + err);
+                logger.error("failed to make filesystem \n" + err);
                 throw new RuntimeException();
             } else {
                 String s = "";
@@ -151,14 +114,15 @@ public class MountExt4 {
                 stdOut.close();
                 if (err.length() != 0) {
 
-                    logger.error("failed to make dir \n" + err);
+                    logger.error("failed to make filesystem \n" + err);
                     throw new RuntimeException();
                 }
             }
+
         } catch (final IOException e) {
             throw new RuntimeException(e);
-        } catch (final InterruptedException e) {
-            throw new RuntimeException(e);
         }
+
     }
+
 }
