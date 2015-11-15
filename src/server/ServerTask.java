@@ -23,7 +23,6 @@ public class ServerTask implements Runnable {
      * 
      */
     private static final int WRITE_BUFF_SIZE = 4 * 1024;
-    private static final int GIB_TO_BYTES = 1024 * 1024 * 1024;
     private static final int REQUEST_LENGTH = 28;
 
     private static final int READ = 0;
@@ -128,6 +127,7 @@ public class ServerTask implements Runnable {
         try {
             while (total < header.length) {
                 recvd = in.read(buff);
+                // TODO:network activity, make asynchronous
                 this.dataChannel.write(buff, header.offset + total, recvd);
                 total += recvd;
             }

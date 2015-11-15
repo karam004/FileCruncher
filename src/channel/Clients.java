@@ -6,7 +6,11 @@ public class Clients {
 
     private static ArrayList<Client> clientList = new ArrayList<>();
 
-    public static Client getClient(final int chunk_index) {
-        return clientList.get(chunk_index % clientList.size());
+    public static Client getClient(final long chunk_index) {
+        return clientList.get((int) (chunk_index % clientList.size()));
+    }
+
+    public static void addClient(final Client client) {
+        clientList.add(client);
     }
 }
