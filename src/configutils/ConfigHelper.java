@@ -91,4 +91,9 @@ public class ConfigHelper {
         }
 
     }
+
+    public long getTotalMem() {
+        return Long.parseLong(sampleConfig
+                .getProperty(ConfigKeys.AVAILABLE_SPACE));
+    }
 }
