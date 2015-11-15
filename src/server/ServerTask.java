@@ -128,6 +128,7 @@ public class ServerTask implements Runnable {
         try {
             while (total < header.length) {
                 recvd = in.read(buff);
+                this.dataChannel.write(buff, header.offset + total, recvd);
                 total += recvd;
             }
             // send Acknowledgment
