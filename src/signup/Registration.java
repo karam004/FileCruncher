@@ -54,7 +54,7 @@ public class Registration {
 
     private static HttpTransport HTTP_TRANSPORT;
 
-    private static final List<String> SCOPES = Arrays.asList(DriveScopes.DRIVE_METADATA_READONLY);
+    private static final List<String> SCOPES = Arrays.asList(DriveScopes.DRIVE, DriveScopes.DRIVE_FILE, DriveScopes.DRIVE_APPDATA);
 
     static {
         try {
