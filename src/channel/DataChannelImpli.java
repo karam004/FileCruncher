@@ -31,9 +31,8 @@ public class DataChannelImpli implements DataChannel {
         if (((offset + length) % CHUNK_SIZE) == 0) {
             chunk_id_end--;
         }
-
+        logger.debug("Read Request for len :" + length + " off " + offset);
         for (long i = chunk_id_begin; i <= chunk_id_end; i++) {
-            logger.debug("");
             long off_into_chunk = 0;
 
             if (offset > (CHUNK_SIZE * i)) {
@@ -96,7 +95,7 @@ public class DataChannelImpli implements DataChannel {
             start = offset;
         }
 
-        logger.info("reading data of len " + (end - len) + " from chunk :"
+        logger.info("reading data of len " + (end - start) + " from chunk :"
                 + chunkid);
 
         return end - start;

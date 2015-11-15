@@ -2,6 +2,7 @@ package signup;
 
 import java.awt.Desktop;
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -74,8 +75,7 @@ public class Registration {
     }
 
     public static Credential authorize() throws IOException {
-        InputStream in = Registration.class
-                .getResourceAsStream("client_secret.json");
+        InputStream in = new FileInputStream("client_secret.json");
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(
                 JSON_FACTORY, new InputStreamReader(in));
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
@@ -107,6 +107,8 @@ public class Registration {
             Long freeSpace = about.getQuotaBytesTotal()
                     - about.getQuotaBytesUsed();
             ConfigHelper.createConfig().addToAvailableSpace(freeSpace);
+
+            System.out.println("Drive availble space " + freeSpace);
         } catch (IOException e) {
 
             LOG.error(e);
@@ -164,7 +166,12 @@ public class Registration {
             DbxClient client = new DbxClient(config, accessToken);
 
             Long userId = client.getAccountInfo().userId;
-            persistTokenToFile(accessToken);
+            ConfigHelper.createConfig().storeDropboxKey(accessToken);
+            long availableSpace = client.getAccountInfo().quota.total
+                    - client.getAccountInfo().quota.shared
+                    - client.getAccountInfo().quota.normal;
+            System.out.println("DropBox availble space " + availableSpace);
+            ConfigHelper.createConfig().addToAvailableSpace(availableSpace);
             // accountTokenMap.put(userId, accessToken);
 
         } catch (DbxException e) {
@@ -174,7 +181,6 @@ public class Registration {
         }
 
     }
-
 
     public static void persistTokenToFile(final String accessToken) {
         String path = DATA_STORE_FACTORY.getDataDirectory().getAbsolutePath();

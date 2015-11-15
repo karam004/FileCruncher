@@ -92,6 +92,17 @@ public class ConfigHelper {
 
     }
 
+    public void storeDropboxKey(final String access) {
+        sampleConfig.setProperty(ConfigKeys.DROPBOX_ACCES, access);
+        try {
+            FileOutputStream out = new FileOutputStream(accessProperties);
+            sampleConfig.save(out, "updated access key");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     public long getTotalMem() {
         return Long.parseLong(sampleConfig
                 .getProperty(ConfigKeys.AVAILABLE_SPACE));

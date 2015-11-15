@@ -18,9 +18,9 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-import configutils.Constants;
 import service.FileChruncherService;
 import signup.Registration;
+import configutils.Constants;
 
 public class GUIClass extends JFrame {
 
@@ -34,19 +34,16 @@ public class GUIClass extends JFrame {
     }
 
     private void initUI() {
-        final int[] count = {0};
+        final int[] count = { 0 };
         BufferedImage dropBoxIcon = null;
         BufferedImage driveIcon = null;
         BufferedImage doneIcon = null;
 
         try {
-            dropBoxIcon = ImageIO.read(new File(
-                    Constants.DROPBOX_IMG));
-            driveIcon = ImageIO
-                    .read(new File(Constants.DRIVE_IMG));
+            dropBoxIcon = ImageIO.read(new File(Constants.DROPBOX_IMG));
+            driveIcon = ImageIO.read(new File(Constants.DRIVE_IMG));
 
-            doneIcon = ImageIO
-                    .read(new File(Constants.DONE_IMG));
+            doneIcon = ImageIO.read(new File(Constants.DONE_IMG));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -102,8 +99,9 @@ public class GUIClass extends JFrame {
 
         doneButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                if (count[0] != 0){
+            public void actionPerformed(final ActionEvent actionEvent) {
+                if (count[0] != 0) {
+                    System.out.println("starting action");
                     FileChruncherService.main(new String[2]);
                 }
             }

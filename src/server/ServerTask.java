@@ -69,6 +69,7 @@ public class ServerTask implements Runnable {
 
         while (true) {
             NbdClientRequestHeader header = getHeader(in);
+            logger.info(header.toString());
             if (header.requestType == READ) {
                 handleRead(header, out);
             } else if (header.requestType == CLOSE) {

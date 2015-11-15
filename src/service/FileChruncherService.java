@@ -3,21 +3,23 @@ package service;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.util.Locale;
 
 import org.apache.log4j.Logger;
 
 import server.NBDClient;
 import server.ServerTask;
-import signup.Registration;
 import utils.NBDutils;
 import channel.Clients;
 import channel.DataChannel;
 import channel.DataChannelImpli;
-import channel.DriveClient;
+import channel.DropboxClient;
 
-import com.google.api.services.drive.Drive;
+import com.dropbox.core.DbxClient;
+import com.dropbox.core.DbxRequestConfig;
 
 import configutils.ConfigHelper;
+import configutils.ConfigKeys;
 import configutils.Constants;
 
 public class FileChruncherService {
@@ -43,12 +45,22 @@ public class FileChruncherService {
         }
 
         try {
-            Drive drive = Registration.getDriveService();
-            DriveClient driveClient = new DriveClient(drive);
-            Clients.addClient(driveClient);
+            // Drive drive = Registration.getDriveService();
+            // DriveClient driveClient = new DriveClient(drive);
+            // Clients.addClient(driveClient);
+
+            DbxRequestConfig config = new DbxRequestConfig(Constants.APP_NAME,
+                    Locale.getDefault().toString());
+            DbxClient dropbox = new DbxClient(config, ConfigHelper
+                    .createConfig()
+                    .getValueFromConfig(ConfigKeys.DROPBOX_ACCES));
+
+            DropboxClient bropBoxClient = new DropboxClient(dropbox);
+
+            Clients.addClient(bropBoxClient);
 
             int port = startNBDserver();
-
+            System.out.println("NBD server started at port " + port);
             startNBDclient(port);
 
         } catch (IOException e) {
@@ -71,7 +83,7 @@ public class FileChruncherService {
         serverThread.start();
 
         sleep(serverThread);
-        logger.debug("NBD server started at port " + port);
+        logger.info("NBD server started at port " + port);
         return port;
     }
 
@@ -81,7 +93,7 @@ public class FileChruncherService {
 
         clientthread.start();
         sleep(clientthread);
-        logger.debug("NBD client started  " );
+        logger.info("NBD client started  ");
     }
 
     private static ServerSocket openServerSocket() throws IOException {
@@ -119,7 +131,7 @@ public class FileChruncherService {
         return false;
     }
 
-    private static  void sleep(Thread thread){
+    private static void sleep(final Thread thread) {
         try {
             Thread.sleep(sleeptime);
             while (!thread.getState().equals(Thread.State.RUNNABLE)) {
@@ -132,6 +144,7 @@ public class FileChruncherService {
             throw new RuntimeException(e);
         }
     }
+
     static void addShutDownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 
