@@ -49,8 +49,8 @@ public class DataChannelImpli implements DataChannel {
     @Override
     public void write(final byte[] buffer, final long offset, final long length) {
         long chunk_id_begin = offset / CHUNK_SIZE;
-        long chunk_id_end = (offset + CHUNK_SIZE) / CHUNK_SIZE;
-        if (((offset + CHUNK_SIZE) % CHUNK_SIZE) == 0) {
+        long chunk_id_end = (offset + length) / CHUNK_SIZE;
+        if (((offset + length) % CHUNK_SIZE) == 0) {
             chunk_id_end--;
         }
 
@@ -58,17 +58,17 @@ public class DataChannelImpli implements DataChannel {
 
         if (chunk_id_begin == chunk_id_end) {
             long offset_into_chunk = offset - CHUNK_SIZE * chunk_id_begin;
-            logger.debug("write to one chunk " + chunk_id_begin);
-            logger.debug("write to one chunk off " + offset + " len " + length);
+            logger.info("write to one chunk " + chunk_id_begin);
+            logger.info("write to one chunk off " + offset + " len " + length);
             Clients.getClient(chunk_id_begin).write(buff, chunk_id_begin,
                     offset_into_chunk, 0, length);
         } else {
             long offset_into_chunk = offset - CHUNK_SIZE * chunk_id_begin;
             long len = (chunk_id_end) * CHUNK_SIZE - offset;
 
-            logger.debug("write to two chunk " + chunk_id_begin + ","
+            logger.info("write to two chunk " + chunk_id_begin + ","
                     + chunk_id_end);
-            logger.debug("write to two chunk off " + offset + " len " + length);
+            logger.info("write to two chunk off " + offset + " len " + length);
             Clients.getClient(chunk_id_begin).write(buff, chunk_id_begin,
                     offset_into_chunk, 0, len);
             // write to next chunk

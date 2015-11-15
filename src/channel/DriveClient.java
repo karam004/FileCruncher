@@ -30,8 +30,8 @@ public class DriveClient implements Client {
     }
 
     @Override
-    public void read(final ByteBuffer buffer, final long id, final long offset,
-            final long length) {
+    public String read(final ByteBuffer buffer, final long id,
+            final long offset, final long length) {
         InputStream readStream = downloadFile(this.drive, String.valueOf(id));
         try {
             assert readStream != null;
@@ -43,7 +43,7 @@ public class DriveClient implements Client {
             logger.error(e);
             throw new RuntimeException(e);
         }
-
+        return null;
     }
 
     @Override

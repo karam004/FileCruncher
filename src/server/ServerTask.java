@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 
 import utils.NetUtils;
 import channel.DataChannel;
+import configutils.Constants;
 
 public class ServerTask implements Runnable {
     private static Logger logger = Logger.getLogger(ServerTask.class);
@@ -22,7 +23,7 @@ public class ServerTask implements Runnable {
     /**
      * 
      */
-    private static final int WRITE_BUFF_SIZE = 4 * 1024;
+    private static final int WRITE_BUFF_SIZE = (int) Constants.CHUNK_SIZE;
     private static final int REQUEST_LENGTH = 28;
 
     private static final int READ = 0;
@@ -127,7 +128,8 @@ public class ServerTask implements Runnable {
         int recvd = 0;
         try {
             while (total < header.length) {
-                recvd = in.read(buff);
+                recvd = NetUtils.receiveExact(in, buff, header.length);
+                assert (recvd == header.length);
                 // TODO:network activity, make asynchronous
                 this.dataChannel.write(buff, header.offset + total, recvd);
                 total += recvd;

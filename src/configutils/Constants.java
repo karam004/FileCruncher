@@ -12,7 +12,7 @@ public class Constants {
     public static final String ACCESS_PROPERTIES_RELATIVE_PATH = "user.dir";
     public static final String ACCESS_PROPERTIES_FILENAME = "app.config";
 
-    public static final long CHUNK_SIZE = 4 * 1024;
+    public static final long CHUNK_SIZE = 1024 * 1024;
 
     public static final String NBD_DEVICE = "/dev/nbd0";
     public static final int NBD_SERVER_PORT = 9000;

@@ -26,14 +26,15 @@ public class DropboxClient implements Client {
     }
 
     @Override
-    public void read(final ByteBuffer buffer, final long id, final long offset,
-            final long length) {
+    public String read(final ByteBuffer buffer, final long id,
+            final long offset, final long length) {
         logger.info("Dropbox read chunk " + id);
         if (!isExisting(id)) {
             logger.info("chunk has not been written returning 0s");
-            return;
+            return null;
         }
-        InputStream readStream = fetchChunk(id);
+        String rev = null;
+        InputStream readStream = fetchChunk(id, rev);
         try {
             assert readStream != null;
             readStream.skip(offset);
@@ -45,6 +46,7 @@ public class DropboxClient implements Client {
             throw new RuntimeException(e);
         }
 
+        return rev;
     }
 
     @Override
@@ -59,20 +61,31 @@ public class DropboxClient implements Client {
         buffer.get(arr, 0, (int) length);
 
         ByteBuffer buff = ByteBuffer.allocate((int) Constants.CHUNK_SIZE);
+        String rev = null;
+        boolean update = false;
         if (isExisting(id)) {
-            read(buff, id, 0, Constants.CHUNK_SIZE);
+            update = true;
+            rev = read(buff, id, 0, Constants.CHUNK_SIZE);
         }
         buff.position((int) offset);
         buff.put(arr);
 
         InputStream in = new ByteArrayInputStream(buff.array());
-        putData(id, in, Constants.CHUNK_SIZE);
+        putData(id, in, Constants.CHUNK_SIZE, update, rev);
 
     }
 
-    private void putData(final long id, final InputStream in, final long length) {
+    private void putData(final long id, final InputStream in,
+            final long length, final boolean update, final String rev) {
         try {
-            client.uploadFile("/" + id, DbxWriteMode.add(), length, in);
+            if (update) {
+
+                client.uploadFile("/" + id, DbxWriteMode.update(rev), length,
+                        in);
+            } else {
+                client.uploadFile("/" + id, DbxWriteMode.add(), length, in);
+            }
+
         } catch (DbxException e) {
             logger.error(e);
             throw new RuntimeException(e);
@@ -89,13 +102,14 @@ public class DropboxClient implements Client {
         }
     }
 
-    private InputStream fetchChunk(final long id) {
+    private InputStream fetchChunk(final long id, String rev) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(
                 (int) Constants.CHUNK_SIZE);
 
         DbxEntry.File downloadedFile;
         try {
             downloadedFile = client.getFile("/" + id, null, outputStream);
+            rev = downloadedFile.rev;
             logger.debug("Metadata: " + downloadedFile.toString());
 
         } catch (DbxException | IOException e) {
