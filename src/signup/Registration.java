@@ -175,6 +175,7 @@ public class Registration {
 
     }
 
+
     public static void persistTokenToFile(final String accessToken) {
         String path = DATA_STORE_FACTORY.getDataDirectory().getAbsolutePath();
         path = path + "/" + "DropBoxCode";

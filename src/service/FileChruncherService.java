@@ -55,6 +55,8 @@ public class FileChruncherService {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
+        addShutDownHook();
     }
 
     private static int startNBDserver() throws IOException {
@@ -68,17 +70,7 @@ public class FileChruncherService {
 
         serverThread.start();
 
-        try {
-            Thread.sleep(sleeptime);
-            while (!serverThread.getState().equals(Thread.State.RUNNABLE)) {
-                Thread.sleep(sleeptime);
-            }
-
-        } catch (InterruptedException e) {
-            logger.error("Thread intrupption when stating nbd server thread  ",
-                    e);
-            throw new RuntimeException(e);
-        }
+        sleep(serverThread);
 
         return port;
     }
@@ -88,17 +80,7 @@ public class FileChruncherService {
         Thread clientthread = new Thread(nbdClient);
 
         clientthread.start();
-        try {
-            Thread.sleep(sleeptime);
-            while (!clientthread.getState().equals(Thread.State.RUNNABLE)) {
-                Thread.sleep(sleeptime);
-            }
-
-        } catch (InterruptedException e) {
-            logger.error("Thread intrupption when stating nbd client thread  ",
-                    e);
-            throw new RuntimeException(e);
-        }
+        sleep(clientthread);
     }
 
     private static ServerSocket openServerSocket() throws IOException {
@@ -136,6 +118,19 @@ public class FileChruncherService {
         return false;
     }
 
+    private static  void sleep(Thread thread){
+        try {
+            Thread.sleep(sleeptime);
+            while (!thread.getState().equals(Thread.State.RUNNABLE)) {
+                Thread.sleep(sleeptime);
+            }
+
+        } catch (InterruptedException e) {
+            logger.error("Thread intrupption when stating nbd server thread  ",
+                    e);
+            throw new RuntimeException(e);
+        }
+    }
     static void addShutDownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 

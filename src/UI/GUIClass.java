@@ -18,6 +18,8 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+import configutils.Constants;
+import service.FileChruncherService;
 import signup.Registration;
 
 public class GUIClass extends JFrame {
@@ -32,14 +34,19 @@ public class GUIClass extends JFrame {
     }
 
     private void initUI() {
+        final int[] count = {0};
         BufferedImage dropBoxIcon = null;
         BufferedImage driveIcon = null;
+        BufferedImage doneIcon = null;
 
         try {
             dropBoxIcon = ImageIO.read(new File(
-                    "/home/karamc/Desktop/dropBox.png"));
+                    Constants.DROPBOX_IMG));
             driveIcon = ImageIO
-                    .read(new File("/home/karamc/Desktop/drive.png"));
+                    .read(new File(Constants.DRIVE_IMG));
+
+            doneIcon = ImageIO
+                    .read(new File(Constants.DONE_IMG));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -48,12 +55,17 @@ public class GUIClass extends JFrame {
         // JButton oneDriveButton = new JButton("OneDrive");
         JButton driveButton = new JButton(new ImageIcon(driveIcon));
         JButton dropBoxButton = new JButton(new ImageIcon(dropBoxIcon));
+        JButton doneButton = new JButton(new ImageIcon(doneIcon));
 
         driveButton.setBorder(BorderFactory.createEmptyBorder());
         driveButton.setContentAreaFilled(false);
 
         dropBoxButton.setBorder(BorderFactory.createEmptyBorder());
         dropBoxButton.setContentAreaFilled(false);
+
+        doneButton.setBorder(BorderFactory.createEmptyBorder());
+        doneButton.setContentAreaFilled(false);
+        doneButton.setSize(5, 5);
 
         Container pane = getContentPane();
         FlowLayout flow = new FlowLayout();
@@ -63,12 +75,16 @@ public class GUIClass extends JFrame {
         flow.setHgap(100);
         flow.setVgap(10);
         add(dropBoxButton);
+        flow.setHgap(100);
+        flow.setVgap(20);
+        add(doneButton);
 
         driveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent event) {
                 try {
                     Registration.testDrive();
+                    count[0]++;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -79,12 +95,22 @@ public class GUIClass extends JFrame {
             @Override
             public void actionPerformed(final ActionEvent event) {
                 Registration.dropboxAuthentication();
+                count[0]++;
 
             }
         });
 
+        doneButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                if (count[0] != 0){
+                    FileChruncherService.main(new String[2]);
+                }
+            }
+        });
+
         setTitle("File Cruncher Login");
-        setSize(300, 200);
+        setSize(300, 400);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
