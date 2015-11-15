@@ -10,4 +10,11 @@ public class Constants {
 
     public static final long CHUNK_SIZE = 4 * 1024;
 
+    public static final String NBD_DEVICE = "/dev/nbd0";
+    public static final int NBD_SERVER_PORT = 9000;
+
+    public static final String MOUNT_PATH = "/media/fcrunch";
+
+    public static final String EXT4 = "ext4";
+
 }
