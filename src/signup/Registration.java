@@ -3,7 +3,6 @@ package signup;
 import java.awt.Desktop;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -33,7 +32,6 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.About;
-import com.google.api.services.drive.model.FileList;
 
 import configutils.ConfigHelper;
 import configutils.Constants;
@@ -119,18 +117,6 @@ public class Registration {
 
     public static void testDrive() throws IOException {
         Drive service = getDriveService();
-
-        FileList result = service.files().list().setMaxResults(10).execute();
-        List<com.google.api.services.drive.model.File> files = result
-                .getItems();
-        if (files == null || files.size() == 0) {
-            System.out.println("No files found.");
-        } else {
-            System.out.println("Files:");
-            for (com.google.api.services.drive.model.File file : files) {
-                System.out.printf("%s (%s)\n", file.getTitle(), file.getId());
-            }
-        }
         printAbout(service);
     }
 
@@ -182,17 +168,4 @@ public class Registration {
 
     }
 
-    public static void persistTokenToFile(final String accessToken) {
-        String path = DATA_STORE_FACTORY.getDataDirectory().getAbsolutePath();
-        path = path + "/" + "DropBoxCode";
-        try {
-
-            FileOutputStream tokenFile = new FileOutputStream(path);
-            tokenFile.write(accessToken.getBytes());
-            tokenFile.close();
-            LOG.debug("AccessCode for DropBox written on disk");
-        } catch (IOException e) {
-            LOG.error(e);
-        }
-    }
 }

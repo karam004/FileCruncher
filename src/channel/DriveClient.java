@@ -32,6 +32,8 @@ public class DriveClient implements Client {
     @Override
     public String read(final ByteBuffer buffer, final long id,
             final long offset, final long length) {
+        String fileId = getFileId(this.drive, Long.toString(id));
+        if (fileId == null) return null;
         InputStream readStream = downloadFile(this.drive, String.valueOf(id));
         try {
             assert readStream != null;
@@ -83,7 +85,7 @@ public class DriveClient implements Client {
                 outputFile.close();
                 fileStream.close();
                 Files.delete(Paths.get("File://" + String.valueOf(id)));
-            } catch (IOException e) {
+            } catch (Exception e) {
                 logger.error(e);
             }
 

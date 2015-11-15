@@ -5,15 +5,14 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.util.Locale;
 
+import channel.*;
+import com.google.api.services.drive.Drive;
 import org.apache.log4j.Logger;
 
 import server.NBDClient;
 import server.ServerTask;
+import signup.Registration;
 import utils.NBDutils;
-import channel.Clients;
-import channel.DataChannel;
-import channel.DataChannelImpli;
-import channel.DropboxClient;
 
 import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxRequestConfig;
@@ -45,9 +44,9 @@ public class FileChruncherService {
         }
 
         try {
-            // Drive drive = Registration.getDriveService();
-            // DriveClient driveClient = new DriveClient(drive);
-            // Clients.addClient(driveClient);
+             Drive drive = Registration.getDriveService();
+             DriveClient driveClient = new DriveClient(drive);
+             Clients.addClient(driveClient);
 
             DbxRequestConfig config = new DbxRequestConfig(Constants.APP_NAME,
                     Locale.getDefault().toString());
